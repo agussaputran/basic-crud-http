@@ -62,6 +62,9 @@ func writeResponse(w http.ResponseWriter, r *http.Request, data interface{}, err
 
 func getApi(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
+		for _, v := range db {
+			fmt.Println(v)
+		}
 		writeResponse(w, r, db, nil)
 	} else {
 		w.WriteHeader(405)
@@ -126,9 +129,13 @@ func deleteApi(w http.ResponseWriter, r *http.Request) {
 		idReq, _ := strconv.Atoi(q.Get("id"))
 		for i, v := range db {
 			if v.ID == uint32(idReq) {
-				db[i] = db[len(db)-1]
-				db = db[:len(db)-1]
+				// deleting data with index selected
+				db = append(db[:i], db[i+1:]...)
 			}
+		}
+		fmt.Println()
+		for _, v := range db {
+			fmt.Println(v)
 		}
 	} else {
 		w.WriteHeader(405)
